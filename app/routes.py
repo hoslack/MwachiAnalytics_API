@@ -6,6 +6,7 @@ import jwt
 from datetime import datetime, timedelta
 from app.models import User
 from config import Config
+from app.decorators import token_required
 
 
 @app.route('/')
@@ -15,7 +16,7 @@ def hello_world():
 
 
 @app.route('/auth/register', methods=['POST'])
-def register_user():
+def register_user(current_user):
     data = request.get_json()
     hashed_password = generate_password_hash(data['password'], method='sha256')
     user = User(public_id=str(uuid.uuid4()), username=data['username'], email=data['email'], password=hashed_password)
