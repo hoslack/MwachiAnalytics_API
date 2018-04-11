@@ -2,7 +2,10 @@ from app import app
 from flask import request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
+import jwt
+from datetime import datetime, timedelta
 from app.models import User
+from config import Config
 
 
 @app.route('/')
@@ -34,13 +37,22 @@ def get_user(public_id):
 
 @app.route('/auth/login', methods=['POST'])
 def login():
+    secret = Config.SECRET_KEY
     auth = request.authorization
     if not auth or not auth.username or not auth.password:
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic-realm="Login Required!"'})
     user = User.query.filter_by(username=auth.username).first()
     if not user:
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic-realm="Login Required!"'})
-    if check_password_hash(user.password,auth.password):
+    if check_password_hash(user.password, auth.password):
+        token = jwt.encode({'public_id': user.public_id, 'exp': datetime.utcnow() + timedelta(minutes=30)}, secret,
+                           algorithm='HS256')
+
+        return jsonify({'token': token.decode('UTF-8')})
+    return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic-realm="Login Required!"'})
+
+
+
 
 
 
