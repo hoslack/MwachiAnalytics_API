@@ -6,7 +6,7 @@ import jwt
 from datetime import datetime, timedelta
 from app.models import User
 from config import Config
-from app.decorators import token_required
+
 
 
 @app.route('/')
