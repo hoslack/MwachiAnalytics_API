@@ -4,3 +4,5 @@ config.py
 *.pyc
 __pycache__/
 *.py[cod]
+/migrations
+.env
