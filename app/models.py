@@ -27,11 +27,16 @@ class Order(db.Model):
     software_requirements = db.Column(db.String(250))
     description = db.Column(db.Text)
     created_by = db.Column(db.String)
+    paid = db.Column(db.Boolean)
 
     """Method for saving order into the database user """
 
     def save(self):
         db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
         db.session.commit()
 
     def __repr__(self):

@@ -90,14 +90,15 @@ def create_order():
                   software_requirements=software_requirements, description=description, created_by=created_by)
 
     order.save()
-    return jsonify({'message': 'order updated successfully'})
+    return jsonify({'message': 'order created successfully'})
 
 
 @app.route('/order', methods=['GET'])
 def get_all_orders():
     orders = Order.query.all()
+    if not orders:
+        return jsonify({'message': 'There are no orders found'})
     output = []
-
     for order in orders:
         order_data = {}
         order_data['public_id'] = order.public_id
@@ -105,6 +106,29 @@ def get_all_orders():
         output.append(order_data)
 
     return jsonify({'orders': output})
+
+
+@app.route('/order/<public_id>', methods=['DELETE'])
+def delete_order(public_id):
+    order = Order.query.filter_by(public_id=public_id).first()
+    if not order:
+        return jsonify({'message': 'The order does not exist'})
+    order.delete()
+    return jsonify({'message': 'The order was deleted successfully'})
+
+
+@app.route('/order/<public_id>', methods=['PUT'])
+def update_order(public_id):
+    data = request.get_json()
+    order = Order.query.filter_by(public_id=public_id)
+    order.paid = data['paid']
+    order.save()
+    return jsonify({'message': 'The order was updated successfully'})
+
+
+
+
+
 
 
 
