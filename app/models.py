@@ -20,6 +20,7 @@ class User(db.Model):
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     public_id = db.Column(db.String(100), index=True, unique=True)
+    email = db.Column(db.String(50), index=True, unique=True)
     phone_number = db.Column(db.String(50), index=True, unique=True)
     how_to_contact = db.Column(db.String(50))
     leading_channel = db.Column(db.String(50))
